@@ -41,6 +41,16 @@ fn main() {
             2 => {
                 println!("{:#?}", todos);
             }
+            3 => {
+                println!("update todos");
+            }
+            4 => {
+                let mut id = String::new();
+                io::stdin().read_line(&mut id).expect("failed to read id");
+                let id = id.trim().parse().unwrap_or(0);
+                delete_todo(&mut todos, id);
+                println!("Todo of id {id} is successfully deleted!");
+            }
             5 => break,
             _ => {
                 println!("invalid option please choose correct options");
@@ -49,7 +59,7 @@ fn main() {
     }
 }
 fn create_todo(todos: &mut Vec<TodoStruct>) {
-    let mut id = todos.len() as u32 + 1;
+    let id = todos.len() as u32 + 1;
     let mut title = String::new();
 
     println!("Enter Title");
@@ -71,4 +81,17 @@ fn create_todo(todos: &mut Vec<TodoStruct>) {
         is_completed: is_completed,
         created_at: Local::now(),
     });
+}
+fn delete_todo(todos: &mut Vec<TodoStruct>, id: u32) {
+    if id == 0 {
+        println!("Invalid ID. ID should be greater than 0");
+    } else {
+        todos
+            .iter()
+            .position(|todo| todo.id == id)
+            .map(|index| {
+                todos.remove(index);
+            })
+            .unwrap();
+    }
 }
